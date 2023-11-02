@@ -433,13 +433,13 @@ unsafe extern "C" fn cg_event_tap_callback_internal(
     _user_info: *const c_void,
 ) -> crate::sys::CGEventRef {
     let callback = _user_info as *mut CGEventTapCallBackFn;
-    let event = CGEvent::from_ptr(_event);
+    let event = ManuallyDrop::new(CGEvent::from_ptr(_event));
     let new_event = (*callback)(_proxy, _etype, &event);
-    let event = match new_event {
-        Some(new_event) => new_event,
-        None => event,
-    };
-    ManuallyDrop::new(event).as_ptr()
+
+    match new_event {
+        Some(new_event) => ManuallyDrop::new(new_event).as_ptr(),
+        None => std::ptr::null_mut()
+    }
 }
 
 /// ```no_run
