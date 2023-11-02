@@ -125,6 +125,9 @@ pub enum CGEventType {
     KeyUp = 11,
     FlagsChanged = 12,
 
+    // System defined events.
+    SystemDefined = 14,
+
     // Specialized control devices.
     ScrollWheel = 22,
     TabletPointer = 23,
