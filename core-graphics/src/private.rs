@@ -14,6 +14,8 @@
 use crate::geometry::CGRect;
 use libc::{c_int, c_uint};
 use std::ptr;
+use core_foundation::base::CFTypeRef;
+use core_foundation::string::CFStringRef;
 
 pub struct CGSRegion {
     region: ffi::CGSRegionRef,
@@ -83,6 +85,23 @@ impl CGSSurface {
             )
         }
     }
+}
+
+pub type CGSConnectionId = i32;
+
+#[cfg_attr(
+    feature = "link",
+    link(name = "ApplicationServices", kind = "framework")
+)]
+extern "C" {
+    pub fn CGSSetConnectionProperty(
+        connection_id: CGSConnectionId,
+        target_connection_id: CGSConnectionId,
+        key: CFStringRef,
+        value: CFTypeRef,
+    ) -> ffi::CGError;
+
+    pub fn _CGSDefaultConnection() -> CGSConnectionId;
 }
 
 mod ffi {
